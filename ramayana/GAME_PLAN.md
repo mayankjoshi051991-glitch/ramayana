@@ -8,9 +8,10 @@ Source: [ramayana_complete_illustrative_retelling.txt](ramayana_complete_illustr
 
 | Item | Proposal |
 |---|---|
-| Genre | Story-driven 3D action-adventure (third-person), chapter-based, linear |
+| Genre | Story-driven **2D side-scrolling action-adventure / platformer**, chapter-based, linear |
+| Art | Indian-miniature / temple-art inspired 2D: painterly parallax backgrounds, bone-animated characters |
 | Platform | Android first (phones + tablets), iOS later from same project |
-| Engine | **Unity 6 LTS + URP** (best mobile scalability, one project for low → high devices, easy iOS port) |
+| Engine | **Unity 6 LTS + URP 2D Renderer** (2D lights, 2D Animation bones, Sprite Library for costume swaps, easy iOS port) |
 | Structure | 10 Acts (= Parts) → 39 Chapters → 2–5 sequential Objectives each |
 | Session length | 10–20 min per chapter (mobile-friendly), checkpoint after every objective |
 | Total playtime | ~10–14 hours |
@@ -19,7 +20,7 @@ Source: [ramayana_complete_illustrative_retelling.txt](ramayana_complete_illustr
 ### Core idea: "The hero changes as the story changes"
 Two layers:
 
-1. **Hero Arc (Rama evolves)** — Rama's model, costume, age, weapons and abilities change per Act:
+1. **Hero Arc (Rama evolves)** — Rama's sprites, costume, age, weapons and abilities change per Act:
    - Act I: Child / young prince (training bow, basic moves)
    - Act II: Prince of Ayodhya (royal silk, Shiva's bow moment, divine astras from Vishvamitra)
    - Act III–IV: Exile (bark cloth, matted hair, forest survival skills, Kodanda bow)
@@ -28,7 +29,7 @@ Two layers:
 2. **Perspective Chapters (playable character switches)** — the story is told through whoever drives it:
    - Dasharatha (memory), Bharata, Jatayu, Hanuman, Lakshmana, Lava & Kusha.
 
-Each playable form = one `CharacterForm` data asset (model + moveset + abilities), so switching is data, not new code.
+Each playable form = one `CharacterForm` data asset (Sprite Library + moveset + abilities), so switching is data, not new code.
 
 ---
 
@@ -123,16 +124,16 @@ flowchart LR
 | Playable | Rama (5 forms), Hanuman, Lakshmana, Bharata, Jatayu, Lava/Kusha, Dasharatha | Controller, full moveset, abilities, VO |
 | Companion (AI) | Lakshmana, Sita (forest), Sugriva, Angada, vanaras | Follow/assist AI, combat assist, barks |
 | Story NPC | Dasharatha, Kaikeyi, Janaka, Vishvamitra, Vibhishana, Valmiki… | Idle/talk anims, dialogue, cutscenes |
-| Enemy | Rakshasa soldiers, archers, beasts | Behaviour tree, 3–5 attack patterns, LODs |
+| Enemy | Rakshasa soldiers, archers, beasts | Behaviour tree, 3–5 attack patterns, palette-swap variants |
 | Boss | Tataka, Khara, Ravana (Ch16 & Ch32), Kumbhakarna, Indrajit | Phase state machine, unique moves, arena |
 | Special rigs | Hanuman (tail), Jatayu (bird), Ravana (ten heads), Kumbhakarna (giant) | Custom rig + anims |
 
 ### 4.2 Per-character pipeline
 1. **Extract** from text: VISUAL PORTRAIT, chapters appearing, relationships, key moments.
 2. **Character sheet**: personality, virtue (from Epilogue: Rama—Duty, Sita—Dignity, Lakshmana—Loyalty, Bharata—Renunciation, Hanuman—Devotion, Ravana—Corrupted greatness…), forms per chapter.
-3. **Concept art**: front/side/back turnaround, colour palette, costume per form.
-4. **3D model**: LOD0 (high), LOD1, LOD2 (low-end). Shared humanoid skeleton for retargeting.
-5. **Animation set**: locomotion, combat, abilities, emotes, cutscene-specific.
+3. **Concept art**: side-view pose (game view) + portrait for dialogue, colour palette, costume per form.
+4. **2D rig**: character drawn in separate layers (head, torso, arms, legs…) in Krita → PSB → Unity PSD Importer + 2D Animation bones. Shared bone layout for all humans so animations are reused; costume/age changes = Sprite Library swap.
+5. **Animation set**: idle, walk, run, jump, climb, bow draw/shoot, melee, hurt, abilities, talk/emotes.
 6. **Behaviour**: player controller OR AI (behaviour tree) OR dialogue-only.
 7. **Voice + dialogue**: lines per chapter, localized.
 8. **Integration test** on low and high devices.
@@ -151,15 +152,15 @@ flowchart LR
 ### 5.1 Device tiers (auto-detected at first launch, user override)
 | Tier | Example hardware | Render | FPS | Features |
 |---|---|---|---|---|
-| Low | 3–4 GB RAM, Adreno 610 / Mali-G52, GLES 3.0 | ~720p (render scale 0.7) | 30 | Baked lighting, no/1 shadow cascade, 512–1K textures, LOD2, small crowds |
-| Mid | 6 GB RAM, Snapdragon 7-series / Mali-G78 | 1080p | 30–60 | 2 shadow cascades, 1–2K textures, light post-FX |
-| High | 8–12 GB+, Snapdragon 8 Gen 2+ / Dimensity 9000+, Vulkan | 1080p–1440p | 60 (120 opt.) | Realtime shadows, 2K textures, bloom/DOF, large GPU-instanced armies |
+| Low | 2–3 GB RAM, Adreno 5xx–610 / Mali-G52, GLES 3.0 | 720p | 60 (30 fallback) | SD sprite atlases (half-res), no 2D lights, 2 parallax layers, fewer particles |
+| Mid | 4–6 GB RAM, Snapdragon 6/7-series | 1080p | 60 | HD atlases, basic 2D lights, 4 parallax layers |
+| High | 8 GB+, Snapdragon 8-series / Dimensity 9000+, Vulkan | Native | 60–120 | HD atlases + normal maps, full 2D lights & shadows, bloom, rich particles, large battle crowds |
 
 - Min Android: 8.0 (API 26), 64-bit (arm64-v8a) only, target SDK = current Google Play requirement.
 - Graphics APIs: Vulkan (preferred) with OpenGL ES 3.0 fallback.
 - Textures: ASTC; Play texture-compression targeting.
-- Size: base AAB ≤ 200 MB, each Act downloaded via **Play Asset Delivery** (on-demand); Addressables in Unity.
-- Scalability: LODs, dynamic resolution, occlusion culling, GPU instancing, adaptive performance / thermal throttling.
+- Size budget: **APK/AAB ≤ 150 MB total** (no extra downloads needed); Git repo ≤ 800 MB (GitHub free LFS is 1 GB).
+- Scalability: HD/SD sprite atlas variants, 2D lights on/off, parallax layer count, particle budget, frame-rate cap, thermal throttling.
 - Offline play; cloud save optional (Google Play Games).
 - Controls: touch (virtual stick + context buttons) + Bluetooth gamepad.
 - Localization: English + Hindi at launch; Tamil, Telugu, Kannada, Malayalam, Bengali later.
@@ -169,9 +170,11 @@ flowchart LR
 |---|---|
 | Unity Hub + Unity 6 LTS (Android Build Support, OpenJDK, SDK & NDK) | Engine + Android builds |
 | VS Code + C# Dev Kit / Unity extension | Coding |
-| Android Studio (optional) | SDK manager, adb, Logcat, profiling; emulator is **not** reliable for 3D perf — use real devices |
+| Android Studio (optional) | SDK manager, adb, Logcat, emulator for low-end compatibility checks |
 | Android GPU Inspector / Snapdragon Profiler / Arm Performance Studio | GPU profiling |
-| Blender | Modelling, rigging, animation |
+| Krita (free) | Painting characters/backgrounds in layers (PSB export) |
+| Inkscape (free, optional) | Vector UI/icons |
+| Unity 2D Animation + PSD Importer + Cinemachine (free packages) | Bone rigging, sprite swap, 2D camera |
 | Git + Git LFS | Version control for code and large assets |
 | Yarn Spinner or Ink | Dialogue |
 | FMOD or Unity Audio | Music/SFX |
@@ -219,7 +222,7 @@ Assets/
 
 ### Phase 1 — Vertical Slice (Act I, Chapters 1–5)
 - [ ] Core: scene loading, save/checkpoint, quality tier auto-detect
-- [ ] Touch controls + third-person camera
+- [ ] Touch controls + 2D follow camera (Cinemachine)
 - [ ] Rama (Young form) controller + bow combat with aim-assist
 - [ ] Lakshmana companion AI
 - [ ] Dialogue system + 1 cutscene with Timeline
@@ -250,9 +253,10 @@ Assets/
 
 | Topic | Decision | Impact |
 |---|---|---|
-| Gameplay | 3D third-person action-adventure | As planned above |
-| Art style | Stylised painterly (Indian miniature / temple-art inspired) | Toon/painterly URP shader, hand-painted textures — cheaper and scales better on low-end than realism |
-| Engine | Unity 6 LTS (URP) | — |
+| Gameplay | **2D** side-scrolling action-adventure (changed from 3D to save size and cost) | Smaller files, faster to build solo, runs on almost any phone |
+| Art style | Indian miniature / temple-art inspired 2D | Miniature paintings are flat and side-on — a natural fit for 2D |
+| Engine | Unity 6 LTS, **Universal 2D** template | — |
+| Budget | **Free only** | Free tools and free/CC0 assets; placeholder art first |
 | Team | Solo + AI help + Asset Store / generated assets | **Reduce scope**: ship episodically (see below) |
 | Business | Free with ads | Rewarded ads only (e.g. revive, bonus codex art); **no ads during story/cutscenes or sacred scenes**; Google AdMob + UMP consent; follow Play Families policy if targeting kids |
 | Languages | English + Hindi | Unity Localization; subtitles first, VO later |
@@ -264,7 +268,7 @@ Assets/
 ### Solo-developer scope plan
 - **Release 1**: Act I (Ch 1–5) + Act II (Ch 6–7) — the vertical slice, polished.
 - Then ship one Act per update (episodic), reusing systems and character rigs.
-- Use a single shared humanoid rig + Asset Store animation packs; custom work only for Hanuman, Jatayu, Ravana, Kumbhakarna.
+- One shared 2D bone layout for all humans; custom rigs only for Hanuman (tail), Jatayu, Ravana (ten heads), Kumbhakarna.
 - Combine or turn some chapters into cinematics if time is short (e.g. 9, 10, 27, 33, 38, 39).
 
 ### Low-end testing strategy
@@ -278,5 +282,9 @@ Assets/
 
 Recommended: emulator for compatibility + one cheap real phone before Release 1.
 
-### Still open
-- Budget for Asset Store / AI asset tools / voice actors
+### Free asset rules (public repo)
+- Use only: our own art, CC0 assets (e.g. Kenney), or CC-BY with credit; record every source in a credits list.
+- **Do not commit Unity Asset Store assets** to this public repo — their licence forbids redistribution.
+- AI-generated art only from tools whose terms allow commercial use; keep the prompt/source noted.
+- Voice: subtitles only at first; VO later if volunteers are available.
+- Start with simple placeholder shapes; replace with final art chapter by chapter.

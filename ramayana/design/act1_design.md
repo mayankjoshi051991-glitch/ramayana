@@ -16,11 +16,11 @@ Target: ~60–75 min total. Checkpoint after every objective. Virtue meter: **Du
 | Mood | Quiet sorrow → hope → celebration |
 
 **Objectives (in order)**
-1. *Walk the palace corridors to the council* — movement + camera tutorial; slow, heavy walk animation for the old king.
+1. *Walk the palace corridors to the council* — movement tutorial (left/right, doors, stairs); slow, heavy walk animation for the old king.
 2. *Speak with Vasishta* — dialogue tutorial; decision to perform the ritual.
 3. *Attend the sacred fire* — cinematic: the divine being and the offering (Timeline cutscene, no gameplay).
 4. *Wait in the palace courtyard* — ambient: news of four births arrives one by one (Rama, Bharata, Lakshmana & Shatrughna).
-5. *Hold the newborn Rama* — emotional close-up; camera flies out over celebrating Ayodhya → title card.
+5. *Hold the newborn Rama* — emotional close-up; camera zooms out through parallax layers over celebrating Ayodhya → title card.
 
 **Unlocks:** Codex — Ayodhya, Dasharatha, the four queens.
 **Virtue moments:** none (prologue).
@@ -75,7 +75,7 @@ Target: ~60–75 min total. Checkpoint after every objective. Virtue meter: **Du
 | Story beat | In a dark, threatening forest Rama meets Tataka; he hesitates; Vishvamitra explains the larger duty; Rama acts; the sacrifice is protected |
 | Playable | Rama (Young Prince) + Lakshmana AI |
 | NPCs | Vishvamitra |
-| Enemies | Forest shadow-beasts (minor), rakshasa raiders (yajna defence) |
+| Enemies | Forest shadow-beasts (minor), rakshasa raiders led by **Subahu** and **Maricha** (from Valmiki) |
 | Boss | **Tataka** |
 | Scene | Night forest: huge tree shadows, unfamiliar sounds, fog, fireflies; then hermitage altar clearing |
 
@@ -87,12 +87,13 @@ Target: ~60–75 min total. Checkpoint after every objective. Virtue meter: **Du
    - P1: throws boulders/uproots trees → dodge + shoot.
    - P2: vanishes into darkness, illusions → track by sound and Lakshmana's call-outs.
    - P3: enraged charge → use Astra 1 when she is stunned.
-5. *Defend the sacrifice* — 3 waves of raiders against the altar (protect-objective with health bar).
+5. *Defend the sacrifice* — Vishvamitra begins the six-day ritual; 3 waves of raiders attack the altar (protect-objective with health bar).
+6. **Mini-boss: Subahu and Maricha** — Subahu attacks from the ground (defeated); Maricha attacks from the sky and is struck by Rama's arrow that hurls him far away across the ocean — he survives. Sets up his return as the Golden Deer in Chapter 15.
 
 **Unlocks:** Target lock, Astra 2, Codex — Tataka, Vishvamitra.
 **Virtue:** protect the altar without letting it drop below 50% → **Duty**; revive Lakshmana quickly → **Loyalty**.
 **Rating note (15+):** stylised combat, no gore; defeat shown with dissolving dark smoke.
-**Open question:** the retelling does not name Subahu/Maricha here — keep generic raiders, or add them from Valmiki?
+**Decision:** Subahu and Maricha are added from Valmiki (not named in the retelling) because Maricha's escape pays off in Chapter 15.
 
 ---
 
@@ -118,7 +119,7 @@ Target: ~60–75 min total. Checkpoint after every objective. Virtue meter: **Du
 
 ## Act I Characters
 
-| Character | Role | Form(s) in Act I | Visual notes (from text) | Rig / anims |
+| Character | Role | Form(s) in Act I | Visual notes (from text) | 2D rig / anims |
 |---|---|---|---|---|
 | Rama | Playable | Young Prince | Tall for his age, calm large eyes, cloud-blue complexion, archer's balance, princely clothes and ornaments | Shared humanoid; bow set, locomotion, traversal |
 | Lakshmana | Companion AI | Young Prince | More intense face, alert, always armed, "energy of a drawn bow" | Shared humanoid; bow + melee |
@@ -131,8 +132,10 @@ Target: ~60–75 min total. Checkpoint after every objective. Virtue meter: **Du
 | Vasishta | NPC | Sage | Ancient, matted hair, simple robes, composed | Shared humanoid; sage idles |
 | Vishvamitra | NPC / guide | Sage | Tall, lean ascetic, matted hair, commanding eyes, powerful stillness | Shared humanoid; blessing/teaching anims |
 | Tataka | Boss | Rakshasi | Formidable, associated with violence and destruction (design: large, wild, dark forest-themed) | Custom large rig |
+| Subahu | Mini-boss | Rakshasa | Heavy, armoured ground fighter | Shared rakshasa rig |
+| Maricha | Mini-boss (returns Ch15) | Rakshasa | Agile, sky-attacking, cunning; recognisable face for later | Shared rakshasa rig + flying anims |
 | Ahalya | NPC | — | Restored from isolation; serene | Shared female humanoid |
-| Citizens / priests | Crowd | — | Kosala city clothing variants | Shared rigs + GPU instancing |
+| Citizens / priests | Crowd | — | Kosala city clothing variants | Shared rig + sprite/colour swaps |
 | Shadow-beasts, raiders | Enemies | — | Forest-themed, stylised | 2 simple rigs |
 
-**Asset count for Act I:** ~12 character models (many reuse the base body), 2 enemy rigs, 1 boss rig, 5 environments (palace, gurukul/range, city, river path, night forest + hermitage).
+**Asset count for Act I:** ~14 2D characters (most share one human bone layout + sprite swaps), 2 enemy rigs, 1 boss rig, 5 parallax environments (palace, gurukul/range, city, river path, night forest + hermitage). Size target for Act I art: ≤ 25 MB.
