@@ -27,6 +27,7 @@
 *.mdb
 *.opendb
 *.VC.db
+UpgradeLog*.htm
 
 # Build output
 *.apk
